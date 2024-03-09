@@ -44,6 +44,43 @@ async def login_user(request):
 
 
 @api_view(['GET'])
+async def get_profile(request):
+    sync_user_serializer = sync_to_async(UserSerializer)
+    serializer = await sync_user_serializer(request.user, many=False)
+    to_representation_async = sync_to_async(serializer.to_representation)
+    data = await to_representation_async(serializer.instance)
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+async def update_profile(request):
+    try:
+        user_instance = request.user
+        serializer = UserSerializer(user_instance, data=request.data, partial=True)
+
+        if await sync_to_async(serializer.is_valid)():
+            await sync_to_async(serializer.save)()
+            to_representation_async = sync_to_async(serializer.to_representation)
+            data = await to_representation_async(serializer.instance)
+            return Response(data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+async def get_user_by_id(request, *args, **kwargs):
+    try:
+        user = await User.objects.aget(pk=kwargs['user_id'])
+        serializer = UserSerializer(user)
+        to_representation_async = sync_to_async(serializer.to_representation)
+        data = await to_representation_async(serializer.instance)
+        return Response(data, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
 async def get_languages(request):
     languages = await sync_to_async(list)(Language.objects.all())
     serializer = LanguageSerializer(languages, many=True)
@@ -84,7 +121,48 @@ async def get_suitable_users(request):
     users_suitable = await sync_to_async(list)(users_suitable_query)
     serializer = UserSerializer(users_suitable, many=True)
     serialized_data = await sync_to_async(serializer.to_representation)(users_suitable)
+    """[
+        {
+            "id": 2,
+            "username": "nikakoy_",
+            "email": "email@gmail.com",
+            "gender": null,
+            "first_name": "last_name",
+            "last_name": "Katya",
+            "status": "online",
+            "last_active_date": "2024-03-07T22:48:27.909086Z",
+            "registration_date": "2024-03-07T22:48:27.909086Z",
+            "photo": "/media/user_photos/das-gewisse-etwas_ZueFtlr.jpg",
+            "phone": "123123213",
+            "birth_date": "2000-12-10",
+            "languages": [
+                {
+                    "id": 3,
+                    "language": {
+                        "id": 2,
+                        "title": "Germany"
+                    },
+                    "proficiency_level": "С1",
+                    "is_learning": true
+                },
+                {
+                    "id": 1,
+                    "language": {
+                        "id": 1,
+                        "title": "English"
+                    },
+                    "proficiency_level": "A1",
+                    "is_learning": true
+                }
+            ]
+        }
+    ]
+    
+    Beispiel 
+    """
     return Response(serialized_data, status=status.HTTP_200_OK)
+
+
 
 
 

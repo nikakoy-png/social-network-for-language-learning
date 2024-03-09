@@ -1,6 +1,8 @@
 from asgiref.sync import sync_to_async
 from django.db import models
 from django.db.models import Q
+from django.db.models import Prefetch
+
 
 class Language(models.Model):
     title = models.CharField(max_length=255, null=False, unique=True)
@@ -10,18 +12,22 @@ class Language(models.Model):
 
 
 class LevelLanguageENUM(models.TextChoices):
-    а1 = 'a1', 'A1'
-    а2 = 'a2', 'A2'
-    b1 = 'b1', 'B1'
-    b2 = 'b2', 'B2'
-    c1 = 'c1', 'C1'
-    c2 = 'c2', 'C2'
+    A1 = 'a1', 'A1'
+    A2 = 'a2', 'A2'
+    B1 = 'b1', 'B1'
+    B2 = 'b2', 'B2'
+    C1 = 'c1', 'C1'
+    C2 = 'c2', 'C2'
+
+    @classmethod
+    def get_all_levels(cls):
+        return [choice for choice in cls.values]
 
 
 class UserLanguages(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    proficiency_level = models.CharField(choices=LevelLanguageENUM.choices, null=False, default=LevelLanguageENUM.а1)
+    proficiency_level = models.CharField(choices=LevelLanguageENUM.choices, null=False, default=LevelLanguageENUM.A1)
     is_learning = models.BooleanField(null=False, default=True)
 
     class Meta:
@@ -42,9 +48,22 @@ class OnlineStatusENUM(models.TextChoices):
 
 class UserQuerySet(models.QuerySet):
     def sort_by_skills_user(self, user):
-        languages = user.languages.all()
-        users_suitable = self.filter(Q(languages__in=languages) & ~Q(pk=user.pk)).distinct()
-        print(users_suitable)
+        proficient_languages = user.languages.exclude(
+            userlanguages__is_learning=False,
+            # ~Q(userlanguages__proficiency_level__in=[LevelLanguageENUM.а1, LevelLanguageENUM.а2, LevelLanguageENUM.b1]) \
+            # einfach Test
+            #     &
+            # Q(languages__in=list_language_levels[list_language_levels.index(
+            #     proficient_languages.values('userlanguages__proficiency_level', flat=True)
+            # ):])
+        )
+        # list_language_levels = LevelLanguageENUM.get_all_levels()
+        prefetch_proficient_languages = Prefetch('languages', queryset=proficient_languages)
+        users_suitable = self.filter(Q(languages__in=proficient_languages) &
+                                     ~Q(pk=user.pk)
+                                     ).prefetch_related(prefetch_proficient_languages).order_by(
+            '-userlanguages__proficiency_level'
+        ).distinct()
         return users_suitable
 
 
@@ -52,8 +71,8 @@ class UserManager(models.Manager):
     def get_queryset(self):
         return UserQuerySet(self.model, using=self._db)
 
-    def get_list_suitable_users(self, languages):
-        return self.get_queryset().sort_by_skills_user(languages)
+    def get_list_suitable_users(self, user):
+        return self.get_queryset().sort_by_skills_user(user)
 
 
 class User(models.Model):
