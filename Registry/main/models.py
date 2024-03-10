@@ -11,7 +11,7 @@ class StatusServiceENUM(models.TextChoices):
 
 class Service(models.Model):
     service_name = models.CharField(max_length=255)
-    status = models.CharField(choices=StatusServiceENUM.choices, default=StatusServiceENUM.waiting, max_length=20)
+    status = models.CharField(choices=StatusServiceENUM.choices, default=StatusServiceENUM.active, max_length=20)
     description = models.TextField()
     start_date = models.DateField(auto_now=True)
     end_date = models.DateField(null=True)

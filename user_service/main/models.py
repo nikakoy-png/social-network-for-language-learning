@@ -89,12 +89,34 @@ class User(models.Model):
     birth_date = models.DateField(null=False)
     status = models.CharField(choices=OnlineStatusENUM.choices, null=False, default=OnlineStatusENUM.online)
     languages = models.ManyToManyField(Language, through=UserLanguages)
+    is_active = models.BooleanField(default=True)
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = [
+        'email',
+        'first_name',
+        'last_name',
+        'password',
+        'password_confirm',
+        'phone',
+        'gender',
+        'photo',
+        'birth_date'
+    ]
 
     objects = models.Manager()
     func = UserManager()
 
+
+    """Dies ist für "Einstellungen", weil es AUTH_USER_MODEL braucht, um gut zu funktionieren.
+    Aber ich verwende JWT anstelle von Django Session, also brauche ich dieses Attribut nicht. 
+     Es hat keinen Einfluss auf die Gesamtleistung, es ist lediglich ein Hinweis auf Migrationsfehler."""
     @property
-    def is_active(self):
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_authenticated(self):
         return True
 
     def __str__(self):
