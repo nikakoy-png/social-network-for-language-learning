@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Give resolution</h2>
+<div mat-dialog-content>
+  <mat-label>Resolution</mat-label>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="text resolution" [(ngModel)]="resolutionText" name="editedText"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="onCancel()">Close</button>
+  <button mat-button color="primary" [disabled]="!resolutionText" (click)="Save()">Give</button>
+</div>

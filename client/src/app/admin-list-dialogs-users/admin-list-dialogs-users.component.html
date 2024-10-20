@@ -1,0 +1,35 @@
+<app-loader *ngIf="!isLoaded"></app-loader>
+
+<div class="dialog-list-container" *ngIf="isLoaded">
+  <h1>Dialog List <h1 style="color: #755898">{{this.user.last_name}} {{this.user.first_name}}</h1></h1>
+  <div *ngFor="let dialog of dialogs" class="dialog-card">
+    <div class="dialog-container" (click)="redirectToDialogMessages(dialog.dialog)">
+      <div class="dialog-details">
+        <div class="dialog-avatar">
+          <img [src]="dialog.details.users[0].photo" alt="User Photo">
+          <p>{{ dialog.details.users[0].first_name }} {{ dialog.details.users[0].last_name }}
+            ({{ dialog.details.users[0].username }})</p>
+        </div>
+        <div class="languages">
+        <p><strong>Common Languages:</strong></p>
+        <div class="language-container">
+          <div *ngFor="let language of commonLanguages(dialog.details.users[0].languages, dialog.details.users[1].languages)" class="language">
+            {{ language.language.title }}
+          </div>
+        </div>
+      </div>
+        <div class="dialog-avatar">
+          <img [src]="dialog.details.users[1].photo" alt="User Photo">
+          <p>{{ dialog.details.users[1].first_name }} {{ dialog.details.users[1].last_name }}
+            ({{ dialog.details.users[1].username }})</p>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-details">
+      <p><strong>Created at:</strong> <span class="highlight">{{ dialog.details.dialog.created_at  | date:'long' }}</span></p>
+      <p><strong>Last activity:</strong> <span class="highlight">{{ dialog.details.dialog.last_activity  | date:'long' }}</span></p>
+      <p><strong>Status:</strong> <span class="highlight">{{ dialog.details.dialog.status }}</span></p>
+      <p *ngIf="dialog.details.dialog.end_date"><strong>End date:</strong> <span class="highlight">{{ dialog.details.dialog.end_date  | date:'long' }}</span></p>
+    </div>
+  </div>
+</div>

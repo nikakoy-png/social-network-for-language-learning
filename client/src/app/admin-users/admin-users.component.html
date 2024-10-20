@@ -1,0 +1,35 @@
+<app-loader *ngIf="!isLoaded"></app-loader>
+
+<div class="user-list-container">
+  <h1>User List</h1>
+  <input type="text" [(ngModel)]="searchTerm" placeholder="Search by username, email, last name, first name" class="search-input"
+         (input)="searchUsers()">
+  <div *ngIf="isLoaded" class="user-cards">
+    <div *ngFor="let user of users" class="user-card">
+      <div class="user-avatar">
+        <img [src]="user.photo" alt="User Photo">
+      </div>
+      <div style="margin-bottom: 2vh" class="user-details">
+        <p><strong>Username:</strong> <span class="highlight">{{ user.username }}</span></p>
+        <p><strong>Email:</strong> <span class="highlight">{{ user.email }}</span></p>
+        <p><strong>Gender:</strong> <span class="highlight">{{ user.gender }}</span></p>
+        <p><strong>First Name:</strong> <span class="highlight">{{ user.first_name }}</span></p>
+        <p><strong>Last Name:</strong> <span class="highlight">{{ user.last_name }}</span></p>
+        <p><strong>Status:</strong> <span class="highlight">{{ user.status }}</span></p>
+        <p><strong>Last Active Date:</strong> <span class="highlight">{{ user.last_active_date  | date:'long' }}</span></p>
+        <p><strong>Registration Date:</strong> <span class="highlight">{{ user.registration_date  | date:'long' }}</span></p>
+        <p><strong>Phone:</strong> <span class="highlight">{{ user.phone }}</span></p>
+        <p><strong>Birth Date:</strong> <span class="highlight">{{ user.birth_date }}</span></p>
+        <span class="detail-label">Languages:</span>
+        <span class="highlight" class="language" *ngFor="let language of user.languages">{{ language.language.title }} ({{ language.proficiency_level }}) </span>
+      </div>
+      <button (click)="openModal(user.id, user.is_active)" class="more-button">More</button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoaded" class="pagination">
+    <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Previous</button>
+    <span>{{ currentPage }}</span>
+    <button (click)="onPageChange(currentPage + 1)">Next</button>
+  </div>
+</div>

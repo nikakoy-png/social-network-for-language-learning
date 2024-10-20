@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-optical-sizing: auto;
+}
+
+body {
+  background:
+    radial-gradient(circle at 20% 50%, #ffb6c1, transparent),
+    radial-gradient(circle at 80% 20%, #add8e6, transparent),
+    radial-gradient(circle at 60% 80%, #ffd700, transparent);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

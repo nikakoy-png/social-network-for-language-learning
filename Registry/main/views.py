@@ -1,11 +1,3 @@
-from asgiref.sync import sync_to_async, async_to_sync
-from django.db.models import Q
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from adrf.decorators import api_view
-from .models import Service, Version
-from .serializers import ServiceSerializer, VersionSerializer
-from rest_framework.response import Response
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from adrf.decorators import api_view
@@ -14,10 +6,6 @@ from .serializers import ServiceSerializer, VersionSerializer
 from rest_framework.response import Response
 from django.db.models import Q
 
-from asgiref.sync import sync_to_async
-
-
-from asgiref.sync import sync_to_async
 
 @api_view(['POST'])
 @csrf_exempt

@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Create Performance</h2>
+<div mat-dialog-content>
+  <mat-form-field class="message-textarea">
+    <mat-label>User</mat-label>
+    <mat-select [(ngModel)]="selectedUser" name="selectedUser">
+      <mat-option *ngFor="let user of users" [value]="user.id">
+        <img [src]="user.photo" alt="Avatar" width="30" height="30">
+        {{ user.username }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-label>Report</mat-label>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Report" [(ngModel)]="report" name="report"></textarea>
+  </mat-form-field>
+
+  <mat-label>Recommendation</mat-label>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Recommendation" [(ngModel)]="recommendation" name="recommendation"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="cancelEdit()">Close</button>
+  <button mat-button color="primary" (click)="saveEdit()">Save</button>
+</div>

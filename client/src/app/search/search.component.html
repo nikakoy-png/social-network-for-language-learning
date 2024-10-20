@@ -1,0 +1,38 @@
+<app-loader *ngIf="!loading"></app-loader>
+
+<div class="partner-selection" *ngIf="loading">
+  <div class="partner-cards">
+    <div class="partner-card" *ngFor="let partner of partners">
+      <div class="user-avatar">
+        <img
+        [src]="envGW + 'user_service' + partner.photo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwdRIXfjIoZZgo4WdJ4nvjWbYIP0Oe6zGDn10RveeYkg&s'"
+        alt="Profile Img" class="avatar">
+      </div>
+      <div class="user-info-container">
+        <div class="user-info">
+          <div class="user-header">
+            <div class="user-name">{{ partner.first_name }} {{ partner.last_name }}</div>
+            <div class="user-username">{{ partner.username }}</div>
+          </div>
+          <div class="user-details">
+            <div class="detail">
+              <span class="detail-label">Gender:</span>
+              <span class="detail-value">{{ partner.gender }}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value">{{ partner.status }}</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Languages:</span>
+              <div class="languages">
+                <span class="language" *ngFor="let language of partner.languages">{{ language.language.title }} ({{ language.proficiency_level }}) </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="write-button" (click)="createDialog(partner.id)">Write</button>
+      </div>
+    </div>
+  </div>
+</div>

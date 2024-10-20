@@ -1,0 +1,19 @@
+<app-loader *ngIf="!isLoaded"></app-loader>
+
+<div class="user-list-container">
+  <h1>Performances List <h1 (click)="redirectToUser()"
+                            style="color: #755898">{{ this.user.last_name }} {{ this.user.first_name }}</h1></h1>
+  <div *ngIf="isLoaded" class="user-cards">
+    <div *ngFor="let performance of this.performances" class="user-card">
+      <div style="margin-bottom: 2vh" class="user-details">
+        <p><strong>ID:</strong> <span class="highlight">{{ performance.id }}</span></p>
+        <p><strong>Report:</strong> <span class="highlight">{{ performance.report }}</span></p>
+        <p><strong>By Admin:</strong> <span
+          class="highlight">{{ performance.admin.last_name }} {{ performance.admin.first_name }}
+          ({{ performance.admin.email }})</span></p>
+        <p><strong>Recommendation:</strong> <span class="highlight">{{ performance.recommendation }}</span></p>
+        <p><strong>Created at:</strong> <span class="highlight">{{ performance.created_at | date:'long' }}</span></p>
+      </div>
+    </div>
+  </div>
+</div>

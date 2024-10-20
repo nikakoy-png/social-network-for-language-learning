@@ -1,0 +1,688 @@
+/* Reset стилей */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Основной контейнер Telegram */
+.telegram-container {
+  display: flex;
+  height: calc(100vh - 60px);
+  margin: 0;
+}
+
+.telegram-content {
+  flex: 1;
+  padding: 0;
+}
+
+/* Блок диалогов */
+.telegram-dialogs {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ccc;
+}
+
+/* Контейнер для чата */
+.telegram-chat {
+  flex: 3;
+  height: 100vh;
+  display: flex;
+  background: linear-gradient(135deg, #dcf1f5, #dde1ec);
+  flex-direction: column;
+}
+
+/* Блок диалога */
+.telegram-dialogs {
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  border-right: 1px solid #ccc;
+}
+
+.telegram-dialog {
+  display: flex;
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.telegram-dialog:hover {
+  background-color: #e5e5e5;
+}
+
+.telegram-dialog-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.telegram-dialog-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.telegram-dialog-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.telegram-dialog-info {
+  display: flex;
+  flex-direction: column; /* Это позволит разместить имя и последнее сообщение вертикально */
+  justify-content: center; /* Выравнивание по вертикали */
+}
+
+.telegram-dialog-username {
+  font-weight: bold;
+}
+
+.telegram-dialog-last-message {
+  color: #777;
+}
+
+
+.telegram-dialog-last-message {
+  margin-top: 5px; /* Добавим небольшой отступ между именем и последним сообщением */
+}
+
+.telegram-dialog-unread {
+  display: flex;
+  flex-direction: column; /* Это позволит разместить число непрочитанных сообщений и время вертикально */
+  justify-content: flex-end; /* Выравнивание по вертикали */
+  align-items: flex-end;
+
+}
+
+/* Стили для кружка с числом непрочитанных сообщений */
+.unread-messages {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%; /* Делаем круглый */
+  background-color: #ff3b30; /* Красный цвет фона */
+  color: white; /* Белый цвет текста */
+  font-size: 15px; /* Размер текста */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0; /* Размещаем в верхнем правом углу блока */
+  right: 0;
+}
+
+
+.telegram-dialog-unread-messages {
+  font-size: 0.8em;
+  margin-top: 5px; /* Добавим небольшой отступ между временем и числом непрочитанных сообщений */
+}
+
+
+/* Информация о диалоге */
+.telegram-dialog-info {
+  margin-left: 10px;
+}
+
+.telegram-dialog-username {
+  font-weight: bold;
+}
+
+/* Стили для контейнера сообщений */
+.telegram-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Стили для сообщения */
+.telegram-message {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px; /* Добавляем отступ снизу между сообщениями */
+  position: relative;
+  animation: fadeInAnimation 0.5s ease; /* Анимация появления */
+}
+
+/* Первое сообщение в контейнере */
+.telegram-messages .telegram-message:first-child {
+  margin-top: auto; /* Первое сообщение прижато к нижнему краю контейнера */
+}
+
+/* Анимация появления сообщения */
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Стили для входящих сообщений */
+.telegram-message.incoming {
+  background-color: #e5e5ea;
+  align-self: flex-start;
+}
+
+/* Стили для исходящих сообщений */
+.telegram-message.outgoing {
+  background-color: #444c83;
+  align-self: flex-end;
+  color: #fff;
+}
+
+.telegram-message.outgoing.feedback {
+  align-self: flex-end;
+  color: #070606;
+}
+
+/* Время сообщения */
+.telegram-message-time {
+  margin-left: 10px;
+  font-size: 0.8em;
+  color: #777;
+}
+
+/* Входящее сообщение */
+.telegram-message.incoming {
+  background-color: #e5e5ea;
+  align-self: flex-start;
+}
+
+/* Исходящее сообщение */
+.telegram-message.outgoing {
+  background-color: #444c83;
+  align-self: flex-end;
+  color: #fff;
+
+  .telegram-message-time {
+    margin-left: 10px;
+    font-size: 0.8em;
+    color: #777;
+  }
+}
+
+/* Стили для входного поля */
+.telegram-input {
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #6a8691;
+}
+
+.telegram-input input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-family: Arial, sans-serif; /* Используемый шрифт */
+  font-size: 14px; /* Размер шрифта */
+  color: #333; /* Цвет текста */
+}
+
+/* Стили для кнопки отправки сообщения */
+.telegram-send-button_helper {
+  border: none;
+  margin-bottom: 10px;
+  background: linear-gradient(135deg, #7d67b4, #ab75b0); /* Цвет фона кнопки */
+  padding: 10px;
+  fill: #000000;
+  border-radius: 50%;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.telegram-send-button {
+  border: none;
+  margin-bottom: 10px;
+  background: #333; /* Цвет фона кнопки */
+  padding: 10px;
+  fill: #000000;
+  border-radius: 50%;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Иконка отправки сообщения */
+.telegram-send-button svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff; /* Цвет самолетика */
+}
+
+.telegram-send-button:hover {
+  background-color: #005580;
+}
+
+/* Стили для скроллбара в WebKit браузерах */
+.telegram-messages::-webkit-scrollbar {
+  width: 8px; /* Ширина скроллбара */
+}
+
+/* Стили для ползунка скроллбара в WebKit браузерах */
+.telegram-messages::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Цвет ползунка */
+  border-radius: 4px; /* Скругление углов ползунка */
+}
+
+/* Стили для скроллбара в Firefox браузере */
+.telegram-messages {
+  scrollbar-width: thin; /* Толщина скроллбара */
+}
+
+/* Стили для ползунка скроллбара в Firefox браузере */
+.telegram-messages {
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Цвет ползунка и фона скроллбара */
+}
+
+/* Стили для активного ползунка скроллбара */
+.telegram-messages::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 0.5); /* Цвет активного ползунка */
+}
+
+/* В вашем файле стилей */
+.edit-icon {
+  position: relative;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease; /* добавим анимацию для opacity и transform */
+  background-color: #80e3b6;
+  border-radius: 15px;
+}
+
+/* В вашем файле стилей */
+.delete-icon {
+  position: relative;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 0;
+  background-color: #fd4d42;
+  border-radius: 15px;
+  transition: opacity 0.3s ease, transform 0.3s ease; /* добавим анимацию для opacity и transform */
+}
+
+/* Анимация появления и исчезновения иконки */
+.telegram-message-content:hover .edit-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1); /* увеличим размер иконки при наведении */
+}
+
+.telegram-message-content:hover .delete-icon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1); /* увеличим размер иконки при наведении */
+}
+
+/* Остальные стили остаются без изменений */
+
+/* Стили для сообщений с фидбеком */
+.telegram-message.feedback {
+  background-color: #ffcccc; /* Красный цвет для сообщений с фидбеком */
+}
+
+/* Стили для контейнера с логотипом */
+.telegram-logo {
+  border: none;
+  background-color: #80e3b6; /* Цвет фона кнопки */
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px; /* Ширина контейнера с логотипом */
+  height: 40px; /* Высота контейнера с логотипом */
+  margin-right: 10px; /* Отступ справа от логотипа */
+  border-radius: 50%; /* Делаем круглый */
+  overflow: hidden; /* Обрезаем изображение, чтобы оно не выходило за границы круга */
+  transition: background-color 0.3s ease; /* Анимация масштабирования */
+}
+
+/* Стили для изображения логотипа */
+.telegram-logo img {
+  width: 100%; /* Заполнение контейнера по ширине */
+  height: 100%; /* Заполнение контейнера по высоте */
+  object-fit: cover; /* Растягиваем изображение, чтобы оно полностью заполнило контейнер */
+}
+
+/* Анимация при наведении на логотип */
+.telegram-logo:hover {
+  background-color: #21c254; /* Новый цвет фона при наведении */
+}
+
+.telegram-gpt-block {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #21404d;
+  border-radius: 10px 10px 0 0;
+  font-family: Consolas, monospace;
+  transform: translateY(80%);
+  transition: opacity 0.5s ease; /* добавляем transition только для opacity */
+}
+
+.telegram-gpt-block.show {
+  opacity: 1; /* делаем блок непрозрачным */
+  height: auto;
+  transform: translateY(0); /* перемещаем блок вверх */
+}
+
+
+/* Стили для логотипа ГПТ */
+.telegram-logo {
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #80e3b6;
+  transition: background-color 0.3s ease;
+}
+
+.telegram-logo:hover {
+  background-color: #21c254;
+}
+
+
+.telegram-help-button {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fffefe;
+  background: linear-gradient(135deg, #4d804e, #64987f);
+  border: none;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.telegram-help-button:hover {
+  background: linear-gradient(135deg, #335634, #446756);
+}
+
+/* Стили для инпута */
+.telegram-input-field {
+  width: calc(40% - 40px); /* ширина инпута минус ширина кнопки отправки */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+}
+
+.telegram-gpt-block.telegram-send-button {
+  border: none;
+  background: linear-gradient(135deg, #397a3a, #458666);
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.telegram-send-button svg {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+.telegram-send-button:hover {
+  background-color: #005580;
+}
+
+.telegram-input-field-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.telegram-input-label {
+  margin-right: 10px;
+  font-size: 16px;
+  color: #fff;
+}
+
+
+/* Для кнопки "Помочь с пониманием контекста" */
+.telegram-help-button {
+  width: 100%;
+  margin: 0 auto 10px;
+}
+
+
+/* Стили для верхней полоски */
+.telegram-top-bar {
+  display: flex;
+  align-items: center;
+  background: #396e7a;
+  padding: 10px;
+}
+
+/* Стили для аватара */
+.telegram-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.telegram-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Стили для информации о собеседнике */
+.telegram-interlocutor-info {
+  color: #fff;
+}
+
+.telegram-interlocutor-name {
+  font-weight: bold;
+}
+
+.no-dialog-selected-message {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+  color: var(--main-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Consolas, monospace;
+  background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
+  border-radius: 10px;
+}
+
+.telegram-no-dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.telegram-chat {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+}
+
+
+.menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.telegram-action-menu {
+  margin-left: auto;
+  position: relative;
+}
+
+.complain-button, .delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.complain-button svg, .delete-button svg {
+  width: 20px;
+  height: 20px;
+  fill: #ffffff;
+}
+
+.complain-button:hover, .delete-button:hover {
+  transform: scale(1.1);
+}
+
+.menu-dots {
+  display: flex;
+  align-items: center; /* Центрирование элементов по вертикали */
+}
+
+.menu-dots .menu-dot {
+  width: 5px;
+  height: 5px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  margin: 2px;
+}
+
+.menu-dots .menu-dot:first-child {
+  margin-left: 0; /* Убираем отступ слева у первой точки */
+}
+
+.telegram-gpt-block {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #21404d;
+  border-radius: 10px 10px 0 0;
+  font-family: Consolas, monospace;
+  transform: translateY(80%);
+  transition: opacity 0.5s ease; /* добавляем transition только для opacity */
+  margin-top: 20px;
+  animation: fadein 0.5s ease;
+}
+
+
+.gpt-context {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff; /* Цвет текста */
+}
+
+.gpt-answer-options {
+  display: flex;
+  flex-direction: row; /* Изменяем направление элементов на горизонтальное */
+
+  button {
+    margin-right: 10px; /* Добавляем отступ между кнопками */
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #80ff72, #7cffe3); /* Киберпанковский пастельный градиент */
+    color: #000; /* Цвет текста */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background: linear-gradient(135deg, #4cfeb8, #4adbf3); /* Киберпанковский пастельный градиент при наведении */
+    }
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.telegram-messages {
+  flex-grow: 1; /* Растягиваем блок на всю доступную высоту */
+  overflow-y: auto; /* Добавляем вертикальную прокрутку, если содержимое блока слишком большое */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.telegram-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Растягиваем контейнер на всю высоту экрана */
+}
+
+.telegram-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Распределение элементов по краям */
+  padding: 10px;
+}
+
+.telegram-avatar-left,
+.telegram-avatar-right {
+  width: 50px; /* Ширина для аватарок */
+}
+
+.telegram-avatar-left .telegram-dialog-avatar,
+.telegram-avatar-right .telegram-dialog-avatar {
+  width: 40px; /* Размер аватарок */
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.telegram-interlocutor-info {
+  flex-grow: 1; /* Растягиваем блок с информацией об интерлокьюторе на всё доступное пространство */
+  text-align: center; /* Выравнивание текста по центру */
+}
+
+.telegram-create-report button {
+  background-color: #4CAF50; /* Цвет кнопки */
+  color: white; /* Цвет текста */
+  padding: 10px 20px; /* Отступы */
+  border: none; /* Убираем границы */
+  border-radius: 5px; /* Скругляем углы */
+  cursor: pointer; /* Изменяем курсор при наведении */
+}
+
+.telegram-create-report button:hover {
+  background-color: #45a049; /* Изменяем цвет кнопки при наведении */
+}
+
+.telegram-messages {
+  flex-grow: 1; /* Растягиваем блок с сообщениями на всё доступное пространство */
+  overflow-y: auto; /* Добавляем вертикальную прокрутку, если контент больше экрана */
+}

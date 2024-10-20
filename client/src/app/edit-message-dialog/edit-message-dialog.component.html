@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Edit message</h2>
+<div mat-dialog-content>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Correction text" [(ngModel)]="editedMessage" name="editedText"></textarea>
+  </mat-form-field>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Description" [(ngModel)]="description" name="description"></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="cancelEdit()">Close</button>
+  <button mat-button color="primary" [disabled]="!editedMessage" (click)="saveEdit()">Give</button>
+</div>

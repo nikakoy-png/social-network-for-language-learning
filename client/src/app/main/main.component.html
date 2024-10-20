@@ -1,0 +1,160 @@
+<app-loader *ngIf="!this.loading"></app-loader>
+
+
+<div *ngIf="this.loading" class="telegram-container">
+  <div class="telegram-dialogs">
+    <div class="telegram-dialog" *ngFor="let dialog of dialogs" (click)="selectDialog(dialog)"
+         [class.active]="dialog === currentlyDialog">
+      <div class="telegram-dialog-avatar">
+        <img
+          [src]="dialog.interlocutor.photo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwdRIXfjIoZZgo4WdJ4nvjWbYIP0Oe6zGDn10RveeYkg&s'"
+          alt="Profile Img" class="avatar">
+      </div>
+      <div class="telegram-dialog-content">
+        <div class="telegram-dialog-info">
+          <div class="telegram-dialog-username">{{ dialog.interlocutor.username }}                     <div class="telegram-dialog-last-message-time">{{ dialog.last_message.send_date | date:'short' }}</div>
+</div>
+          <div class="telegram-dialog-last-message">{{ dialog.last_message.text }}</div>
+
+        </div>
+        <div class="telegram-dialog-unread">
+          <div class="unread-messages" *ngIf="dialog.unread_messages != 0">
+            <div class="telegram-dialog-unread-messages">{{ dialog.unread_messages }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <ng-template #noDialogSelected>
+    <div class="telegram-chat">
+      <div class="telegram-no-dialog">
+        <p class="no-dialog-selected-message">Create or select a conversation</p>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="telegram-chat" *ngIf="dialogSelected; else noDialogSelected">
+    <div class="telegram-top-bar">
+      <div class="telegram-avatar">
+        <div class="telegram-dialog-avatar">
+          <img
+            [src]="currentlyDialog.interlocutor.photo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwdRIXfjIoZZgo4WdJ4nvjWbYIP0Oe6zGDn10RveeYkg&s'"
+            alt="Profile Img" class="avatar">
+        </div>
+      </div>
+      <div class="telegram-interlocutor-info">
+        <div
+          class="telegram-interlocutor-name">{{ currentlyDialog.interlocutor.first_name }} {{ currentlyDialog.interlocutor.last_name }}
+        </div>
+        <div
+          class="telegram-interlocutor-name">{{ currentlyDialog.interlocutor.status }}
+        </div>
+      </div>
+      <div class="telegram-action-menu" (click)="toggleMenu()">
+        <div class="menu-dots">
+          <span class="menu-dot"></span>
+          <span class="menu-dot"></span>
+          <span class="menu-dot"></span>
+        </div>
+        <div class="telegram-menu" [style.display]="showMenu ? 'block' : 'none'">
+          <div class="menu-item" style="color: #ee7171"
+               (click)="complain(currentlyDialog.interlocutor.id, currentlyDialog.dialog_id)">Report chat
+          </div>
+          <div class="menu-item" (click)="delete(currentlyDialog.dialog_id, currentUser.id)">Delete chat</div>
+        </div>
+      </div>
+    </div>
+    <div class="telegram-messages" #messagesContainer>
+      <div *ngFor="let message of messagesCurrentlyDialog"
+           class="telegram-message"
+           [class]="getMessageClasses(message.message.sender_id)"
+           (mouseenter)="message.showEditIcon = showEditIcon_(message.message)"
+           (mouseleave)="message.showEditIcon = false"
+           (mouseenter)="message.showDeleteIcon = showDeleteIcon_(message.message)"
+           (mouseleave)="message.showDeleteIcon = false"
+           [class.feedback]="message.isFeedback">
+        <div class="telegram-message-content" (click)="openShowDialog(message.message.feedback.correction_text,
+         message.message.feedback.description)">
+          <span>{{ message.message.text }}</span>
+          <img *ngIf="message.showEditIcon" src="https://pixsector.com/cache/c5433603/av741f3e5fd1c88304cf8.png"
+               alt="Edit"
+               class="edit-icon"
+               (click)="openEditDialog(message.message.text, message.message.id)">
+          <img *ngIf="message.showDeleteIcon" src="https://pixsector.com/cache/e6b7d60f/av750c156ea54d77b97d4.png"
+               alt="Delete"
+               class="delete-icon"
+               (click)="deleteMsg(message.message.id)">
+          <span class="telegram-message-time">{{ message.message.send_date | date: 'shortTime' }}</span>
+          <svg *ngIf="!message.message.is_read" class="read-icon" viewBox="-2.4 -2.4 28.80 28.80" fill="none"
+               xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+              <g id="Interface / Check_All_Big">
+                <path id="Vector"
+                      d="M7 12L11.9497 16.9497L22.5572 6.34326M2.0498 12.0503L6.99955 17M17.606 6.39355L12.3027 11.6969"
+                      stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="telegram-gpt-block" [class.show]="showAssistanceBlock">
+      <div *ngIf="!this.GPTAnswerHelpUnderstanding && !this.TextAntwortGPT">
+        <button class="telegram-help-button" (click)="sendRequestToHelpUnderstanding()">Help me understand the text
+        </button>
+        <div class="telegram-input-field-container">
+          <div class="telegram-input-label">Ask AI</div>
+          <input type="text" class="telegram-input-field" placeholder="Введите сообщение..."
+                 [(ngModel)]="messageToSend">
+          <button class="telegram-send-button_helper" (keydown.enter)="sendRequestToHelpUnderstandingTEXT()"
+                  (click)="sendRequestToHelpUnderstandingTEXT()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#21404d" d="M2 21.5l9-8.5 9 8.5-9-20z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div *ngIf="this.GPTAnswerHelpUnderstanding && !this.TextAntwortGPT" style="padding: 20px;">
+        <div class="gpt-context">Context: {{ this.GPTAnswerHelpUnderstanding.CONTEXT }}</div>
+        <div class="gpt-answer-options">
+          <button *ngFor="let option of this.GPTAnswerHelpUnderstanding.ANSWERS" (click)="sendMessageFromHelp(option)">
+            {{ option }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!this.GPTAnswerHelpUnderstanding && this.TextAntwortGPT">
+        <div class="gpt-context">{{ this.TextAntwortGPT }}</div>
+        <div class="telegram-input-field-container">
+          <div class="telegram-input-label">Ask AI</div>
+          <input type="text" class="telegram-input-field" placeholder="Enter your message..."
+                 [(ngModel)]="messageToSend">
+          <button class="telegram-send-button_helper" (keydown.enter)="sendRequestToHelpUnderstandingTEXT()"
+                  (click)="sendRequestToHelpUnderstandingTEXT()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#21404d" d="M2 21.5l9-8.5 9 8.5-9-20z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="telegram-input">
+      <div class="telegram-logo" (click)="toggleAssistanceBlock()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png" alt="GPT Chat Logo">
+      </div>
+      <input type="text" [(ngModel)]="newMessage" placeholder="
+Enter your message..." (keydown.enter)="sendMessage()">
+      <button (click)="sendMessage()" class="telegram-send-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#fff" d="M2 21.5l9-8.5 9 8.5-9-20z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

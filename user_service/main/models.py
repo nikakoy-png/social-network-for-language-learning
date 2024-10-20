@@ -83,10 +83,10 @@ class User(models.Model):
     username = models.CharField(max_length=255, null=False, unique=True)
     phone = models.CharField(max_length=255, null=False, unique=True)
     gender = models.CharField(choices=GenderENUM.choices, null=True)
-    photo = models.ImageField(upload_to='user_photos', null=False, default='/default_photo.png')
+    photo = models.ImageField(upload_to='user_photos', null=False, default='user_photos/default_photo.png')
     registration_date = models.DateTimeField(auto_now_add=True)
     last_active_date = models.DateTimeField(auto_now=True)
-    birth_date = models.DateField(null=False)
+    birth_date = models.DateField(null=False, default='2000-12-12')
     status = models.CharField(choices=OnlineStatusENUM.choices, null=False, default=OnlineStatusENUM.online)
     languages = models.ManyToManyField(Language, through=UserLanguages)
     is_active = models.BooleanField(default=True)
@@ -100,7 +100,7 @@ class User(models.Model):
         'password_confirm',
         'phone',
         'gender',
-        'photo',
+        # 'photo',
         'birth_date'
     ]
 

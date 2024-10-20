@@ -1,0 +1,60 @@
+<div class="modal-background" (click)="closeModal()"></div>
+<div class="modal-content">
+  <div class="modal-header">
+    <h2>User Details</h2>
+    <button class="close-button" (click)="closeModal()">Close</button>
+  </div>
+  <div class="modal-body">
+    <div class="message-tiles">
+      <div (click)="openDialogs()" class="message-tile complaint">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#message"></use>
+        </svg>
+        <span class="count">{{ msg.count_dialogs_all }}</span>
+        <span (click)="openDialogs()" class="label">All Dialogs</span>
+      </div>
+      <div (click)="openDialogs()" class="message-tile active-dialog">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#active-message"></use>
+        </svg>
+        <span class="count">{{ msg.count_dialogs_active }}</span>
+        <span class="label">Active Dialogs</span>
+      </div>
+      <div (click)="openComplaints()" class="message-tile complaint">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#complaint"></use>
+        </svg>
+        <span class="count">{{ msg.complaint_count }}</span>
+        <span (click)="openComplaints()" class="label">Complaints</span>
+      </div>
+      <div class="message-tile complaint-with-answer">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#complaint-with-answer"></use>
+        </svg>
+        <span class="count">{{ msg.complaint_with_answer_count }}</span>
+        <span class="label">Complaints with Answer</span>
+      </div>
+      <div class="message-tile feedback">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#feedback"></use>
+        </svg>
+        <span class="count">{{ msg.feedback_count }}</span>
+        <span class="label">Feedback</span>
+      </div>
+      <div (click)="openPerformance()" class="message-tile performance">
+        <svg class="icon">
+          <use xlink:href="assets/icons.svg#feedback"></use>
+        </svg>
+        <span class="count">{{ performances.count_performances }}</span>
+        <span class="label">Performances</span>
+      </div>
+
+    </div>
+    <div class="modal-body">
+      <button *ngIf="this.is_active" class="block-button" (click)="changeStatus()">Block</button>
+      <button *ngIf="!this.is_active" class="unblock-button" (click)="changeStatus()">Unblock</button>
+      <div class="message-tiles">
+      </div>
+    </div>
+  </div>
+</div>

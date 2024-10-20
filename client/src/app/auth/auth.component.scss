@@ -1,0 +1,182 @@
+/* Variables */
+:root {
+  --main-font: 'Roboto', sans-serif;
+  --main-color: #333333;
+  --accent-color: #7F7F7F;
+  --background-color: #F0F0F0;
+}
+
+/* General Styles */
+body {
+  font-family: var(--main-font);
+  color: var(--main-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+}
+
+.box-form {
+  margin: 20px auto;
+  width: 80%;
+  max-width: 800px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.left,
+.right {
+  padding: 40px;
+}
+
+.left {
+  background: linear-gradient(135deg, #e0ffff, #b0c4de);
+  color: var(--main-color);
+}
+
+.right {
+  background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
+  color: var(--main-color);
+}
+
+.overlay {
+  padding: 30px;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0 0 20px;
+}
+
+p {
+  font-size: 1em;
+  margin-bottom: 20px;
+}
+
+h5 {
+  font-size: 1.5em;
+  margin: 0 0 20px;
+}
+
+.inputs {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select {
+  width: calc(100% - 30px);
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+}
+
+input[type="file"] {
+  margin-top: 10px;
+}
+
+button[type="submit"] {
+  color: #FFFFFF;
+  font-size: 1em;
+  padding: 10px 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 20px;
+  background-color: var(--accent-color);
+}
+
+button[type="submit"]:hover {
+  background-color: #cbc9c9;
+}
+
+@media (max-width: 768px) {
+  .box-form {
+    width: 90%;
+  }
+
+  .left,
+  .right {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h5 {
+    font-size: 1.2em;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  select {
+    font-size: 0.9em;
+  }
+
+  button[type="submit"] {
+    font-size: 0.9em;
+    padding: 8px 16px;
+  }
+}
+.file-upload {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  font-size: 1em;
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  font-size: 100px;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-upload:hover {
+  background-color: #2980b9;
+}
+/* Общие стили для контейнера select */
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Стили для самого элемента select */
+.select-container select {
+  padding: 10px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+}
+
+/* Стили для стрелочного элемента */
+
+/* Стили при наведении */
+.select-container:hover::after {
+  color: #333; /* Изменение цвета стрелки при наведении */
+}

@@ -1,0 +1,59 @@
+<app-loader *ngIf="!isLoaded"></app-loader>
+
+<div class="complaints-list-container">
+  <h1>Complaints List</h1>
+  <input type="text" [(ngModel)]="searchTerm" placeholder="Search by user id, username, email" class="search-input"
+         (input)="searchComplaints()">
+  <div *ngIf="isLoaded" class="complaints-cards">
+    <div *ngFor="let complaint of complaints" class="complaints-card">
+      <div class="complaints-details">
+        <p><strong>COMPLAINT ID:</strong> <span class="highlight"> {{ complaint.id }}</span></p>
+        <p *ngIf="complaint.admin_id"><strong>Admin ID:</strong> <span
+          class="highlight"> {{ complaint.admin_id }}</span></p>
+        <p><strong>User ID:</strong> <span class="highlight"> {{ complaint.user_id }}</span></p>
+        <p><strong>Created At:</strong> <span class="highlight"> {{ complaint.created_at }}</span></p>
+        <p><strong>Description:</strong> <span class="highlight"
+                                               style="color: #ee7171"> {{ complaint.description }}</span></p>
+        <p><strong>Status:</strong> <span class="highlight"> {{ complaint.status }}</span></p>
+        <p *ngIf="complaint.resolution"><strong>Resolution:</strong> <span
+          class="highlight"> {{ complaint.resolution }}</span></p>
+        <p><strong>Dialog ID:</strong> <span class="highlight"> {{ complaint.dialog }}</span></p>
+        <p><strong>Dialog Created At:</strong> <span class="highlight"> {{ complaint.details.dialog.created_at }}</span>
+        </p>
+        <p><strong>Dialog End Date:</strong> <span class="highlight"> {{ complaint.details.dialog.end_date }}</span></p>
+        <p><strong>Dialog Last Activity:</strong> <span
+          class="highlight"> {{ complaint.details.dialog.last_activity }}</span></p>
+        <p><strong>Dialog Status:</strong> <span class="highlight"> {{ complaint.details.dialog.status }}</span></p>
+        <p><strong>Users:</strong></p>
+        <div *ngIf="complaint.user_id === complaint.details.users[0].id" class="complaint-user">
+          <p style="color: #ee7171">ID: {{ complaint.details.users[0].id }},
+            Username: {{ complaint.details.users[0].username }}, Email: {{ complaint.details.users[0].email }}</p>
+          <strong>Complaint by:</strong>
+          <p>ID: {{ complaint.details.users[1].id }}, Username: {{ complaint.details.users[1].username }},
+            Email: {{ complaint.details.users[1].email }}</p>
+        </div>
+        <div *ngIf="complaint.user_id === complaint.details.users[1].id" class="complaint-user">
+          <p style="color: #ee7171">ID: {{ complaint.details.users[1].id }},
+            Username: {{ complaint.details.users[1].username }}, Email: {{ complaint.details.users[1].email }}</p>
+          <strong>Complaint by:</strong>
+          <p>ID: {{ complaint.details.users[0].id }}, Username: {{ complaint.details.users[0].username }},
+            Email: {{ complaint.details.users[0].email }}</p>
+        </div>
+        <button (click)="openModal(complaint.dialog)" class="more-button">View in dialog</button>
+        <button (click)="openResolutionDialog(complaint)" class="resolution-button">Give Resolution</button>
+      </div>
+      <div class="modal-body">
+        <button *ngIf="complaint.details.users[0].is_active" class="block-button" (click)="changeStatus(complaint.details.users[0])">Block</button>
+        <button *ngIf="!complaint.details.users[0].is_active" class="unblock-button" (click)="changeStatus(complaint.details.users[0])">Unblock</button>
+        <div class="message-tiles">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoaded" class="pagination">
+      <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Previous</button>
+      <span>{{ currentPage }}</span>
+      <button (click)="onPageChange(currentPage + 1)">Next</button>
+    </div>
+  </div>
+</div>

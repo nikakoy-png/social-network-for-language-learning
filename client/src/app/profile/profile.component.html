@@ -1,0 +1,97 @@
+<app-loader *ngIf="!this.loading"></app-loader>
+
+
+<div *ngIf="this.loading" class="profile-container">
+  <div class="profile-header">
+    <div class="avatar-wrapper">
+      <img
+        [src]="userData.photo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwdRIXfjIoZZgo4WdJ4nvjWbYIP0Oe6zGDn10RveeYkg&s'"
+        alt="Profile Img" class="avatar">
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" style="display: none;" #fileInput
+             *ngIf="fileInputVisible">
+      <button class="change-photo-button" (click)="openFileInput()">Change Photo</button>
+    </div>
+    <div class="profile-info">
+      <h2 class="name">{{ userData.first_name || 'First Name' }} {{ userData.last_name || 'Last Name' }}</h2>
+      <p class="username">{{ userData.username || 'Username' }}</p>
+      <p class="status">Status: {{ userData.status || 'Status' }}</p>
+    </div>
+  </div>
+
+  <div class="profile-details">
+    <div class="detail">
+      <label class="detail-label">Email</label>
+      <input class="detail-input" [(ngModel)]="userData.email" placeholder="{{ userData.email }}">
+    </div>
+    <div class="detail">
+      <label class="detail-label">Phone</label>
+      <input class="detail-input" [(ngModel)]="userData.phone" placeholder="{{ userData.phone }}">
+    </div>
+    <div class="detail">
+      <label class="detail-label">Registration date</label>
+      <input class="detail-input" [(ngModel)]="userData.registration_date"
+             placeholder="{{ userData.registration_date  | date:'long' }}" disabled>
+    </div>
+    <div class="detail">
+      <label class="detail-label">Birth date</label>
+      <input class="detail-input" [(ngModel)]="userData.birth_date" placeholder="{{ userData.birth_date  | date:'long' }}" disabled>
+    </div>
+    <button class="save-button" (click)="saveChanges()" [disabled]="!isDataChanged()">Save Changes</button>
+  </div>
+
+  <div class="profile-languages">
+    <h3 class="languages-heading">Languages:</h3>
+    <div class="language-cards-container">
+      <div class="language-card" *ngFor="let language of userData.languages; let i = index">
+        <div class="language-details">
+          <div class="language-title">{{ i + 1 }}. {{ language.language.title }}</div>
+          <div class="proficiency-level">Proficiency Level: {{ language.proficiency_level }}</div>
+          <div class="learning-info">
+            <mat-icon class="learning-icon">{{ language.is_learning ? 'check_circle' : 'cancel' }}</mat-icon>
+            <span class="learning-label">{{ language.is_learning ? 'Learning' : 'Not Learning' }}</span>
+          </div>
+        </div>
+        <button mat-icon-button color="warn" class="action-button" (click)="removeLanguage(i, language.language.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <form class="language-form" [formGroup]="languageForm" (ngSubmit)="addLanguage()">
+      <mat-form-field>
+        <mat-label>Language</mat-label>
+        <mat-select formControlName="language">
+          <mat-option *ngFor="let language of listLanguages" [value]="language">
+            {{ language['title'] }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="languageForm.controls['language'].errors?.['required'] && languageForm.controls['language'].touched">
+          Language is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Proficiency Level</mat-label>
+        <mat-select formControlName="proficiencyLevel">
+          <mat-option *ngFor="let proficiencyLevel of listProficiencyLevels" [value]="proficiencyLevel.title">
+            {{ proficiencyLevel.title }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="languageForm.controls['proficiencyLevel'].errors?.['required'] && languageForm.controls['proficiencyLevel'].touched">
+          Proficiency level is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="learning" class="learning-checkbox">
+        <span class="checkbox-label">Learning</span>
+      </mat-checkbox>
+      <button mat-raised-button color="primary" type="submit">Add Language</button>
+    </form>
+    <div *ngIf="userData.languages.length === 0" class="no-languages-message">
+      No languages added.
+    </div>
+  </div>
+
+
+</div>

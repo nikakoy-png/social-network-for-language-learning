@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>You can't search for conversation partners because you don't have any language skills records!</h2>
+<h3 mat-dialog-title>Please add one!</h3>
+<div mat-dialog-content [formGroup]="languageForm">
+  <mat-form-field>
+    <mat-label>Language</mat-label>
+    <mat-select formControlName="language">
+      <mat-option *ngFor="let language of listLanguages" [value]="language">
+        {{ language['title'] }}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="languageForm.controls['language'].errors?.['required'] && languageForm.controls['language'].touched">
+      Language is required
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Proficiency Level</mat-label>
+    <mat-select formControlName="proficiencyLevel">
+      <mat-option *ngFor="let proficiencyLevel of listProficiencyLevels" [value]="proficiencyLevel.title">
+        {{ proficiencyLevel.title }}
+      </mat-option>
+    </mat-select>
+    <mat-error
+      *ngIf="languageForm.controls['proficiencyLevel'].errors?.['required'] && languageForm.controls['proficiencyLevel'].touched">
+      Proficiency level is required
+    </mat-error>
+  </mat-form-field>
+  <mat-checkbox formControlName="learning" class="learning-checkbox">
+    <span class="checkbox-label">Learning</span>
+  </mat-checkbox>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button color="primary" [disabled]="!languageForm" (click)="addLanguage()">Add language</button>
+</div>

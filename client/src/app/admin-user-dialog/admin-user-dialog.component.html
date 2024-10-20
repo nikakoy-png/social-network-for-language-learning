@@ -1,0 +1,40 @@
+<app-loader *ngIf="!this.isLoaded"></app-loader>
+
+<div class="telegram-chat" *ngIf="this.isLoaded">
+  <div class="telegram-top-bar">
+    <div class="telegram-avatar-left" (click)="redirectToUser(users[0].username)">
+      <div class="telegram-dialog-avatar" (click)="redirectToUser(users[0].username)">
+        <img [src]="users[0].photo" alt="User Photo">
+      </div>
+      <div class="telegram-interlocutor-info">
+      <div>{{ users[0].first_name }}</div>
+      <div>{{ users[0].last_name }}</div>
+    </div>
+    </div>
+    <div class="telegram-create-report">
+      <button (click)="openCreatePerformance()">Create Report</button>
+    </div>
+    <div class="telegram-avatar-right" (click)="redirectToUser(users[1].username)">
+      <div class="telegram-dialog-avatar" (click)="redirectToUser(users[1].username)">
+                <img [src]="users[1].photo" alt="User Photo">
+
+      </div>
+      <div class="telegram-interlocutor-info">
+      <div>{{ users[1].first_name }}</div>
+      <div>{{ users[1].last_name }}</div>
+    </div>
+    </div>
+  </div>
+  <div class="telegram-messages">
+    <div *ngFor="let message of messages"
+         class="telegram-message"
+         [class]="getMessageClasses(message.sender_id)"
+         [class.feedback]="message.feedback !== null">
+      <div class="telegram-message-content" (click)="openShowDialog(message.feedback.correction_text,
+         message.feedback.description)">
+        <span>{{ message.text }}</span>
+        <span class="telegram-message-time">{{ message.send_date | date: 'shortTime' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

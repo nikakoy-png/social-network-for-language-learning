@@ -1,8 +1,16 @@
+import os
+from io import BytesIO
+
 import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import StreamingResponse
+from starlette.responses import Response
 
 app = FastAPI()
+from PIL import Image
+from prometheus_fastapi_instrumentator import Instrumentator
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,24 +19,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# registry_url = os.environ.get("registry_url")
 registry_url = "http://127.0.0.1:8001/main/get-service-info/"
 client = httpx.AsyncClient()
 
 services_cache = {}
 
+Instrumentator().instrument(app).expose(app)
+
 
 async def get_service_url(service_name: str) -> str:
     if service_name in services_cache:
-        print(service_name)
         return services_cache[service_name]
 
     try:
         response = await client.get(f"{registry_url}{service_name}/")
-        print(response.json())
         response.raise_for_status()
         service_url = response.json()['versions'][0]['service_url']
         services_cache[service_name] = service_url
-        print(services_cache)
         return service_url
 
     except httpx.RequestError as e:
@@ -37,8 +45,6 @@ async def get_service_url(service_name: str) -> str:
 
 async def proxy_request(method: str, service_url: str, path: str, headers: dict, data: bytes = None) -> dict:
     try:
-        print(data)
-        print(service_url)
         async with httpx.AsyncClient() as http_client:
             url = f"{service_url}{path}"
             if method.lower() == "get":
@@ -50,12 +56,18 @@ async def proxy_request(method: str, service_url: str, path: str, headers: dict,
             else:
 
                 if data:
-                    print(1)
                     headers["Content-Length"] = str(len(data))
                 response = await http_client.request(method.upper(), url, headers=headers, content=data)
 
             response.raise_for_status()
-            return response.json()
+            try:
+                return response.json()
+            except UnicodeDecodeError:
+                image = Image.open(BytesIO(response.content))
+                image_bytes = BytesIO()
+                image.save(image_bytes, format='JPEG')
+                return Response(content=image_bytes.getvalue(), media_type=response.headers["Content-Type"])
+
     except httpx.RequestError as e:
         raise HTTPException(status_code=500, detail=f"Error connecting to service: {str(e)}")
     except httpx.HTTPStatusError as e:
@@ -64,9 +76,7 @@ async def proxy_request(method: str, service_url: str, path: str, headers: dict,
 
 @app.post("/gateway/{service_name}/{path:path}")
 async def gateway_post(service_name: str, path: str, request: Request):
-    print(service_name, path)
     service_url = await get_service_url(service_name)
-    print(service_url)
     headers = dict(request.headers)
     data = await request.body()
     return await proxy_request("post", service_url, path, headers, data)

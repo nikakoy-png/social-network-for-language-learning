@@ -1,0 +1,58 @@
+<div class="box-form">
+  <div class="left">
+    <div class="overlay">
+      <h1>Hello, Student</h1>
+      <p>This is a social network for learning and practicing foreign languages</p>
+      <span>
+        <p>Login or Register</p>
+      </span>
+    </div>
+  </div>
+
+  <div class="right">
+    <h5>{{ isRegisterFormVisible ? 'Register' : 'Login' }}</h5>
+    <p>{{ isRegisterFormVisible ? "Already have an account? " : "Don't have an account? " }}
+      <a href="#" (click)="toggleForm($event)">
+        {{ isRegisterFormVisible ? 'Login' : 'Create Your Account' }}
+      </a> it takes less than a minute
+    </p>
+
+    <form *ngIf="!isRegisterFormVisible" [formGroup]="loginForm" (ngSubmit)="onSubmitLogin()">
+      <div class="inputs">
+        <input type="text" placeholder="Username" formControlName="username">
+        <input type="password" placeholder="Password" formControlName="password">
+      </div>
+
+      <br>
+      <button style="color: black" type="submit">Login</button>
+    </form>
+
+    <form *ngIf="isRegisterFormVisible" [formGroup]="registrationForm" (ngSubmit)="onSubmitRegistration()">
+      <div class="inputs">
+        <input type="email" placeholder="Email" formControlName="email">
+        <input type="text" placeholder="Username" formControlName="username">
+        <input type="password" placeholder="Password" formControlName="password">
+        <input type="password" placeholder="Confirm Password" formControlName="password_confirm">
+        <label class="file-upload">
+          Upload Photo
+          <input type="file" (change)="onFileSelected($event)">
+        </label>
+        <input type="date" placeholder="Birth Date" formControlName="birth_date">
+        <div class="select-container">
+          <select formControlName="gender">
+            <option value="" disabled selected hidden>Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <input type="tel" placeholder="Phone" formControlName="phone">
+        <input type="text" placeholder="First Name" formControlName="first_name">
+        <input type="text" placeholder="Last Name" formControlName="last_name">
+      </div>
+      <br>
+      <button type="submit">Register</button>
+    </form>
+
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div *ngIf="isShow" class="top-bar">
+  <div class="top-bar-navigation">
+    <div routerLink="/search" class="top-bar-item">Search interlocutors</div>
+    <div routerLink="/main" class="top-bar-item">Chats</div>
+  </div>
+  <div class="top-bar-profile">
+<img
+        [src]="this.selfUser.photo || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwdRIXfjIoZZgo4WdJ4nvjWbYIP0Oe6zGDn10RveeYkg&s'"
+        alt="Profile Img" class="avatar">    <div class="top-bar-profile-info">
+      <div class="top-bar-profile-name">{{ this.selfUser.first_name }} {{ this.selfUser.last_name }}</div>
+      <div routerLink="/profile" class="top-bar-profile-action">View profile</div>
+    </div>
+  </div>
+</div>

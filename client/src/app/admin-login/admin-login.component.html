@@ -1,0 +1,14 @@
+<div class="admin-login-container">
+  <h2>Admin Login</h2>
+  <form (ngSubmit)="onSubmitLogin()" [formGroup]="loginForm">
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Username" formControlName="username" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Password" formControlName="password" required>
+    </div>
+    <button type="submit">Login</button>
+  </form>
+</div>

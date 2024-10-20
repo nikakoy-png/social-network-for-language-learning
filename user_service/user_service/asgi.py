@@ -19,13 +19,13 @@ load_dotenv()
 
 def register_service_in_registry():
     service_data = {
-        'service_name': os.getenv('service_name'),
+        'service_name': os.environ.get('service_name'),
         'description': 'Description',
-        'version_number': os.getenv('version_number'),
-        'service_url': os.getenv('service_url')
+        'version_number': os.environ.get('version_number'),
+        'service_url': os.environ.get('service_url')
     }
 
-    registry_url = os.getenv('registry_service_url')
+    registry_url = os.environ.get('registry_service_url')
 
     try:
         response = requests.post(registry_url, json=service_data)

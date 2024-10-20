@@ -1,0 +1,58 @@
+/* top-bar.component.css */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a1a;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.top-bar-navigation {
+  display: flex;
+}
+
+.top-bar-item {
+  color: #fff;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  margin-right: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.top-bar-item:hover {
+  color: #80e3b6;
+}
+
+.top-bar-profile {
+  display: flex;
+  align-items: center;
+}
+
+.top-bar-profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.top-bar-profile-info {
+  color: #fff;
+}
+
+.top-bar-profile-name {
+  font-weight: bold;
+}
+
+.top-bar-profile-action {
+  font-size: 14px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.top-bar-profile-action:hover {
+  color: #80e3b6;
+}

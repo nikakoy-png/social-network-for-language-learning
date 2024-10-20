@@ -1,0 +1,211 @@
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffe4e1, #ffb6c1);
+  color: var(--main-color);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info {
+  text-align: left;
+}
+
+.name {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.username, .status {
+  margin: 4px 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.detail-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.save-button {
+  grid-column: span 2;
+  padding: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #0056b3;
+}
+
+.languages-heading {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.language-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.language-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.language-form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.language-form mat-form-field {
+  flex: 1 1 calc(48% - 10px); /* Adjust the percentage as needed */
+  margin-bottom: 10px;
+}
+
+.language-form .learning-checkbox {
+  margin-top: 15px;
+  flex-basis: 100%; /* Make the checkbox take the full width */
+}
+
+.language-form button {
+  width: 100%; /* Make the button take the full width */
+}
+
+
+
+.language-details {
+  flex-grow: 1;
+}
+
+.language-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.proficiency-level {
+  font-size: 16px;
+  color: #666;
+}
+
+.learning-info {
+  display: flex;
+  align-items: center;
+}
+
+.learning-icon {
+  font-size: 24px;
+  color: #55ff00;
+  margin-right: 5px;
+}
+
+.learning-label {
+  font-size: 16px;
+  color: #666;
+}
+
+.action-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.action-button:hover {
+  color: #ff5722;
+}
+
+.no-languages-message {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #666;
+}
+
+.change-photo-button {
+  background-color: rgba(0, 123, 255, 0.3); /* Transparent blue */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s; /* Added color transition */
+}
+
+.change-photo-button:hover {
+  background-color: rgba(0, 123, 255, 1); /* Fully opaque blue on hover */
+  color: #fff;
+}
+
+.change-photo-button:hover {
+  background-color: #0056b3;
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.change-photo-button {
+  position: absolute;
+  bottom: -10px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+

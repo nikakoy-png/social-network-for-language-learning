@@ -5,6 +5,7 @@ import sys
 
 
 def main():
+    print(os.environ.get('DB_HOST'))
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Registry.settings')
     try:

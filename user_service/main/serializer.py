@@ -8,34 +8,32 @@ from passlib.hash import pbkdf2_sha256
 from user_service.settings import SECRET_KEY
 
 
+from rest_framework import serializers
+from .models import User  # замените на правильный путь к вашей модели User
+from passlib.hash import pbkdf2_sha256
+from django.conf import settings
+from datetime import datetime
+
+SECRET_KEY = settings.SECRET_KEY
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True)
-    photo = serializers.ImageField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username',
-                  'email',
-                  'first_name',
-                  'last_name',
-                  'password',
-                  'password_confirm',
-                  'phone',
-                  'gender',
-                  'photo',
-                  'birth_date'
-                  ]
-        extra_kwargs = {'password': {'write_only': True}, 'photo': {'write_only': True}}
+        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'password', 'password_confirm', 'phone', 'gender']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        password = self.validated_data.pop('password')
+        password = validated_data.pop('password')
         hashed_password = pbkdf2_sha256.hash(password, salt=SECRET_KEY.encode('utf-8'))
-        return User.objects.create(password=hashed_password, **self.validated_data)
+        return User.objects.create(password=hashed_password, **validated_data)
 
     def validate(self, data):
         if data['password'] != data.pop('password_confirm'):
             raise serializers.ValidationError("Passwords do not match.")
         return data
+
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -47,7 +45,7 @@ class UserLoginSerializer(serializers.Serializer):
         password = pbkdf2_sha256.hash(attrs.get('password'), salt=SECRET_KEY.encode('utf-8'))
 
         user = User.objects.get(username=username, password=password)
-        if user is None:
+        if user is None or not user.is_active:
             raise ValidationError('Invalid username/password')
 
         refresh = RefreshToken.for_user(user)
@@ -60,7 +58,6 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class LanguageSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Language
         fields = '__all__'
@@ -94,5 +91,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'photo',
                   'phone',
                   'birth_date',
+                  'is_active',
                   'languages',
                   )

@@ -1,18 +1,20 @@
-from django.shortcuts import render
+import os
+from datetime import datetime
+from functools import wraps
+import httpx
 from asgiref.sync import sync_to_async
-from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
 from adrf.decorators import api_view
+from dotenv import load_dotenv
 from rest_framework import status
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from main.models import User, Language, UserLanguages
+from django.db.models import Q
 from main.serializer import UserRegistrationSerializer, UserLoginSerializer, UserSerializer, LanguageSerializer, \
     UserLanguagesSerializer
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+
+load_dotenv()
 
 
 async def get_tokens_for_user(user):
@@ -23,8 +25,13 @@ async def get_tokens_for_user(user):
 
 @api_view(['POST'])
 async def create_user(request):
-    serializer = UserRegistrationSerializer(data=request.data)
+    data = request.data.copy()
+
+    print(data)
+
+    serializer = UserRegistrationSerializer(data=data)
     if not await sync_to_async(serializer.is_valid)():
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     user = await sync_to_async(serializer.save)()
@@ -36,6 +43,7 @@ async def create_user(request):
 async def login_user(request):
     serializer = UserLoginSerializer(data=request.data)
     if not await sync_to_async(serializer.is_valid)():
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     user = serializer.validated_data['user']
@@ -59,7 +67,13 @@ async def update_profile(request):
         serializer = UserSerializer(user_instance, data=request.data, partial=True)
 
         if await sync_to_async(serializer.is_valid)():
-            await sync_to_async(serializer.save)()
+            if 'file' in request.FILES:
+                print(1)
+                user_instance.photo = request.FILES['file']
+                await sync_to_async(user_instance.save)()
+            else:
+                await sync_to_async(serializer.save)()
+
             to_representation_async = sync_to_async(serializer.to_representation)
             data = await to_representation_async(serializer.instance)
             return Response(data, status=status.HTTP_200_OK)
@@ -69,12 +83,14 @@ async def update_profile(request):
 
 
 @api_view(['GET'])
+@authentication_classes([])
 async def get_user_by_id(request, *args, **kwargs):
     try:
         user = await User.objects.aget(pk=kwargs['user_id'])
         serializer = UserSerializer(user)
         to_representation_async = sync_to_async(serializer.to_representation)
         data = await to_representation_async(serializer.instance)
+        print(data)
         return Response(data, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -87,30 +103,35 @@ async def get_languages(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['PATCH']) # hier gibt es keine POST, weil wir einfach USER model upd
+@api_view(['PATCH'])  # hier gibt es keine POST, weil wir einfach USER model upd
 async def add_language(request):
-    language_id = request.data.get('language_id')
+    print(request.data)
+    language = request.data['user_language']['language']
+    proficiency_level = request.data.get('user_language', {}).get('proficiency_level')
+    is_learning = request.data.get('user_language', {}).get('is_learning') or False
+
     try:
-        language = await Language.objects.aget(pk=language_id)
-        await sync_to_async(request.user.languages.add)(language)
-        await sync_to_async(request.user.save)()
-        serializer = LanguageSerializer(language)
+        language = await Language.objects.aget(pk=language['id'])
+        user_language = await UserLanguages.objects.acreate(language=language,
+                                                            user=request.user,
+                                                            proficiency_level=proficiency_level,
+                                                            is_learning=is_learning)
+        serializer = UserLanguagesSerializer(user_language)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Language.DoesNotExist:
         return Response({"error": "Language not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['DELETE'])
-async def delete_language(request):
-    language_id = request.data.get('language_id')
+async def delete_language(request, language_id):
     try:
         language = await Language.objects.aget(pk=language_id)
-        await sync_to_async(request.user.languages.remove)(language)
-        await sync_to_async(request.user.save)()
+        user_language = await UserLanguages.objects.aget(language=language, user=request.user)
+        await sync_to_async(user_language.delete)()
+        serializer = UserSerializer(request.user)
+        serialized_data = await sync_to_async(serializer.to_representation)(request.user)
 
-        user_language = await sync_to_async(UserLanguages.objects.get)(user=request.user)
-        serializer = UserLanguagesSerializer(user_language)
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        return Response(serialized_data, status=status.HTTP_202_ACCEPTED)
     except Language.DoesNotExist:
         return Response({"error": "Language not found"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -163,6 +184,67 @@ async def get_suitable_users(request):
     return Response(serialized_data, status=status.HTTP_200_OK)
 
 
+def admin_required(func):
+    @wraps(func)
+    async def wrapper(request, *args, **kwargs):
+        print(request.headers)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f'{os.environ.get("gate_way_url")}admin_service/is_admin/',
+                                        headers=request.headers)
+            if response.status_code != 200:
+                return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+            return await func(request, *args, **kwargs)
+
+    return wrapper
+
+
+@api_view(['GET'])
+@authentication_classes([])
+@admin_required
+async def get_list_users_for_admin(request, page_number=1, page_size=20):
+    try:
+        offset = (page_number - 1) * page_size
+        users = await sync_to_async(User.objects.all)()
+        users = await sync_to_async(list)(users)
+        users = users[offset:offset + page_size]
+        serializer = UserSerializer(users, many=True)
+        serialized_data = await sync_to_async(serializer.to_representation)(users)
+        return Response(serialized_data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(f'Error in get_list_users_for_admin: {e}')
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@authentication_classes([])
+@admin_required
+async def get_user_for_admin(request, username):
+    try:
+        users = await sync_to_async(User.objects.filter)(
+            Q(username__icontains=username)
+            |
+            Q(email__icontains=username)
+        )
+        users = await sync_to_async(list)(users)
+        serializer = UserSerializer(users, many=True)
+        serialized_data = await sync_to_async(serializer.to_representation)(users)
+        return Response(serialized_data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['PATCH'])
+@authentication_classes([])
+async def update_user_status_for_admin(request, user_id):
+    try:
+        user = await User.objects.aget(pk=user_id)
+        user.is_active = not user.is_active
+        await sync_to_async(user.save)()
+        return Response({'success': True}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

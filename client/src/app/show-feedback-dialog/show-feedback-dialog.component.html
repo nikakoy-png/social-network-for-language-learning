@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Feedback</h2>
+<div mat-dialog-content>
+  <mat-label>Correction text</mat-label>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Исправленный текст" [(ngModel)]="editedMessage" style="color: green" name="editedText" disabled></textarea>
+  </mat-form-field>
+  <mat-label>Description</mat-label>
+  <mat-form-field class="message-textarea">
+    <textarea matInput placeholder="Описание" [(ngModel)]="description" style="color: black" name="description" disabled></textarea>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-button (click)="cancelEdit()">Close</button>
+</div>

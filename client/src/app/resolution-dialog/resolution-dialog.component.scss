@@ -1,0 +1,60 @@
+.actions {
+  justify-content: space-between;
+}
+
+.mat-dialog-content {
+  padding: 24px;
+}
+
+.message-textarea {
+  width: 100%;
+  color: black;
+}
+
+/* Стили для текстового поля */
+textarea[matInput] {
+  width: 100%; /* Растягиваем поле ввода на всю доступную ширину */
+  min-height: 100px; /* Минимальная высота поля ввода */
+  border: none;
+  resize: none; /* Запрещаем изменение размера */
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+
+textarea[matInput]:focus {
+  background-color: #e0e0e0;
+}
+
+/* Стили для кнопок */
+.mat-dialog-actions {
+  justify-content: space-between; /* Равномерное распределение кнопок */
+  margin-top: 24px; /* Отступ сверху для кнопок */
+}
+
+.mat-dialog-actions .mat-button {
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.mat-dialog-actions .mat-button:hover {
+  background-color: #e0e0e0;
+}
+
+.telegram-message-content.feedback {
+  background-color: #ffcccc; /* Красный цвет для сообщений с фидбеком */
+}
+
+/* Увеличение размеров модального окна */
+.mat-dialog-container {
+  min-width: 700px; /* Увеличенная минимальная ширина модального окна */
+  min-height: 500px; /* Увеличенная минимальная высота модального окна */
+  width: 80vw; /* Увеличенная ширина модального окна */
+  max-width: 90vw; /* Максимальная ширина модального окна */
+  height: auto; /* Высота модального окна */
+  max-height: 90vh; /* Максимальная высота модального окна */
+  padding: 24px; /* Отступы внутри модального окна */
+  border-radius: 8px; /* Скругление углов модального окна */
+}
